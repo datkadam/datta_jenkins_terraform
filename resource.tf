@@ -1,21 +1,10 @@
-resource "aws_instance" "myinstance" {
-  count         = var.instance_count
-  ami           = var.ami
-  instance_type = var.instance_type
-
-
-  tags = {
-    Name = "Prod-Server"
-  }
-
-}
 #data block
 data "aws_ami" "amazon-linux-3" {
   most_recent = true
 
   filter {
     name   = "name"
-    values = ["al2023-ami-2023*"] 
+    values = ["al2023-ami-2023*"]
   }
 
   filter {
@@ -33,6 +22,18 @@ data "aws_ami" "amazon-linux-3" {
   }
 }
 
+#argument ke value ka datatype 
+resource "aws_instance" "myinstance" {
+  ami           = data.aws_ami.amazon-linux-3.id
+  instance_type = var.instance_type
+  count         = var.instance_count
+
+  tags = {
+    Name = "Prod-Server"
+  }
+
+}
+
 resource "aws_s3_bucket" "example" {
   bucket = "my-tf-tzxxxxxest-bucket"
 }
@@ -40,8 +41,3 @@ resource "aws_s3_bucket" "example" {
 resource "aws_s3_bucket" "example1" {
   bucket = "my-tf-tzxxxxest-bucket"
 }
-
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
-}
-
